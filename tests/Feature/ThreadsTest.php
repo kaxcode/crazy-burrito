@@ -11,10 +11,22 @@ class ThreadsTest extends TestCase
     /**
      * Test.
      */
-    public function testIfUserCanBrowseThreads()
+    public function testUserCanViewAllThreads()
     {
-        $response = $this->get('/threads');
+        $thread = factory('App\Thread')->create();
 
-        $response->assertStatus(200);
+        $response = $this->get('/threads');
+        $response->assertSee($thread->title);
+    }
+
+    /**
+     * Test.
+     */
+    public function testUserCanViewASingleThread()
+    {
+        $thread = factory('App\Thread')->create();
+
+        $response = $this->get('/threads/' . $thread->id);
+        $response->assertSee($thread->title);
     }
 }
