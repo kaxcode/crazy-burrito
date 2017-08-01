@@ -8,15 +8,20 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 class ThreadsTest extends TestCase
 {
     use DatabaseMigrations;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->thread = factory('App\Thread')->create();
+    }
     /**
      * Test.
      */
     public function testUserCanViewAllThreads()
     {
-        $thread = factory('App\Thread')->create();
-
-        $response = $this->get('/threads');
-        $response->assertSee($thread->title);
+         $this->get('/threads')
+            ->assertSee($this->thread->title);
     }
 
     /**
@@ -24,9 +29,19 @@ class ThreadsTest extends TestCase
      */
     public function testUserCanViewASingleThread()
     {
-        $thread = factory('App\Thread')->create();
+        $this->get('/threads/' . $this->thread->id)
+            ->assertSee($this->thread->title);
+    }
 
-        $response = $this->get('/threads/' . $thread->id);
-        $response->assertSee($thread->title);
+    /**
+     * Test.
+     */
+    function testUserCanReadThreadReplies()
+    {
+        $reply = factory('App\Reply')
+            ->create(['thread_id' =>$this->thread->id]);
+        $this->get('/threads/' . $this->thread->id)
+            ->assertSee($reply->body);
+
     }
 }
