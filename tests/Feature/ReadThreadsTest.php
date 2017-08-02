@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class ThreadsTest extends TestCase
+class ReadThreadsTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -29,7 +29,7 @@ class ThreadsTest extends TestCase
      */
     public function testUserCanViewASingleThread()
     {
-        $this->get('/threads/' . $this->thread->id)
+        $this->get($this->thread->path())
             ->assertSee($this->thread->title);
     }
 
@@ -40,7 +40,8 @@ class ThreadsTest extends TestCase
     {
         $reply = factory('App\Reply')
             ->create(['thread_id' =>$this->thread->id]);
-        $this->get('/threads/' . $this->thread->id)
+
+        $this->get($this->thread->path())
             ->assertSee($reply->body);
 
     }
