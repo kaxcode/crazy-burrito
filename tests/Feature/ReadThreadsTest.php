@@ -13,14 +13,15 @@ class ReadThreadsTest extends TestCase
     {
         parent::setUp();
 
-        $this->thread = factory('App\Thread')->create();
+        $this->thread = create('App\Thread');
     }
+
     /**
      * Test.
      */
     public function testUserCanViewAllThreads()
     {
-         $this->get('/threads')
+        $this->get('/threads')
             ->assertSee($this->thread->title);
     }
 
@@ -38,11 +39,9 @@ class ReadThreadsTest extends TestCase
      */
     function testUserCanReadThreadReplies()
     {
-        $reply = factory('App\Reply')
-            ->create(['thread_id' =>$this->thread->id]);
+        $reply = create('App\Reply', ['thread_id' => $this->thread->id]);
 
         $this->get($this->thread->path())
             ->assertSee($reply->body);
-
     }
 }
